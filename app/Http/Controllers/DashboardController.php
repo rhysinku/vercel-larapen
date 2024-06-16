@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use App\Models\Editor;
 
@@ -13,15 +13,24 @@ class DashboardController extends Controller
         $pen = Editor::orderby('updated_at','desc');
 
         // dd(request()->has('search'));
+       try{
         if(request()->has('search'))
         {
             $pen = $pen->where("title", 'like' ,'%' . request()->get('search'). '%');
         }
-
-        return view(
-            "welcome",
-            ['pens' => $pen->paginate('8')]
+        $pens = $pen->paginate(8);
+       }
+       catch(\Exception  $e){
+        $pens = new LengthAwarePaginator(
+            collect(), // items
+            0, // total
+            8, // per page
+            1, // current page
+            ['path' => request()->url(), 'query' => request()->query()]
         );
+       }
+
+       return view("welcome", ['pens'=> $pens]);
     }
 
     public function notFound(){

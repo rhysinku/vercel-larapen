@@ -9,7 +9,9 @@
         @forelse ($pens as $pen)
             @include('components.editorCard')
         @empty
-            <h1>No Data</h1>
+            <div class="text-center self-center w-full h-full">
+                <h1 class="text-white text-7xl">No Pens</h1>
+            </div>
         @endforelse
         <div class="mt-3 w-full self-end">
             {{ $pens->withQueryString()->links() }}
